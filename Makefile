@@ -4,7 +4,7 @@ CLASSES = Book
 
 SRCSDIR = sources
 
-SRCS =main.cpp ${addsuffix .cpp,${CLASSES}}
+SRCS = main.cpp utils.cpp ${addsuffix .cpp,${CLASSES}}
 
 EXSRCS = sqlite3.c
 
@@ -15,7 +15,7 @@ vpath %.c external/sqlite3
 OBJS =${SRCS:.cpp=.o}
 LIBOBJS = ${EXSRCS:.c=.o}
 CC = gcc
-CPPFLAGS = ${addprefix -I${SRCSDIR}/, ${CLASSES}} -Iexternal/sqlite3
+CPPFLAGS = ${addprefix -I${SRCSDIR}/, ${CLASSES}} -Iexternal/sqlite3 -I${SRCSDIR} -g
 COMA = ,
 
 ${NAME}: ${OBJS} ${LIBOBJS}

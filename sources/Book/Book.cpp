@@ -1,4 +1,5 @@
 #include "Book.hpp"
+#include "utils.h"
 
 Book::Book(void)
 {
@@ -8,14 +9,14 @@ Book::Book(void)
 	note = 0;
 }
 
-Book::Book(std::string &init_title, bool is_finished): title(init_title), finished(is_finished)
+Book::Book(std::string &init_title, bool is_finished) : title(init_title), finished(is_finished)
 {
 	page_number = 0;
 	current_page = 0;
 	note = 0;
 }
 
-Book::Book(Book &other): title(other.title), synopsis(other.synopsis), page_number(other.page_number), finished(other.finished), current_page(other.current_page), note(other.note)
+Book::Book(Book &other) : title(other.title), synopsis(other.synopsis), page_number(other.page_number), finished(other.finished), current_page(other.current_page), note(other.note)
 {
 }
 
@@ -31,25 +32,23 @@ Book &Book::operator=(Book &other)
 
 Book::~Book()
 {
-
 }
 
-void	Book::get_info() const
+void Book::get_info() const
 {
 	std::cout << "Title is: " << title << ".\n";
-	std::cout << "Synopsis is: \n" << synopsis << "\n";
-	std::cout << "Page: " << current_page << "/"  << page_number << ".\n";
+	std::cout << "Synopsis is: \n"
+			  << synopsis << "\n";
+	std::cout << "Page: " << current_page << "/" << page_number << ".\n";
 	std::cout << "The book is" << (finished ? " " : " not ") << "finished.\n";
 	std::cout << "The note is " << note / 20 << "/5." << std::endl;
 }
 
+/*
 void	Book::set_info()
 {
-	std::string	str_buff;
-	unsigned	unsigned_buff;
 
-		std::cout << "Please write the title of the book" << std::endl;
-		std::getline (std::cin, str_buff);
+	unsigned	unsigned_buff;
 		if (str_buff != "")
 			title = str_buff;
 		str_buff.clear();
@@ -72,7 +71,7 @@ void	Book::set_info()
 			finished = unsigned_buff;
 			current_page = page_number;
 		}
-		else 
+		else
 		{
 			std::cout << "At which page are you ?" << std::endl;
 			std::cin >> unsigned_buff;
@@ -87,5 +86,129 @@ void	Book::set_info()
 			std::cin.clear();
 		}
 		note = unsigned_buff;
+}*/
+
+void Book::input_title(void)
+{
+	std::string input_buff = "";
+	while (input_buff == "")
+	{
+		std::cout << "Please write the title of the book" << std::endl;
+		std::getline(std::cin, input_buff);
+		input_buff = trim_spaces(input_buff, " \n \t");
+		if (input_buff.size() >= 200)
+		{
+			std::cout << "Title is too big! Please use less than 200 chars" << std::endl;
+			input_buff = "";
+		}
+	}
+	if (std::cin.fail())
+	{
+		std::cerr << "Input of the book's title failed." << std::endl;
+		exit(1);
+	}
+	title = input_buff;
 }
 
+void Book::input_synopsis(void)
+{
+	std::string input_buff = "";
+	std::string synopsis_buff = "";
+	while (synopsis_buff == "")
+	{
+		std::cout << "Please write the synopsis of the book (finish typing with EOF)" << std::endl;
+		while (std::getline(std::cin, input_buff))
+		{
+			input_buff = trim_spaces(input_buff, " \n \t");
+			synopsis_buff += input_buff + "\n";
+		}
+		if (!std::cin.eof() && std::cin.fail())
+		{
+			std::cerr << "Input of the book's title failed." << std::endl;
+			exit(1);
+		}
+		std::cin.clear();
+	}
+	synopsis = synopsis_buff;
+}
+
+void Book::input_pages(void)
+{
+	const char *total_pages_msg = "Please input the number of pages this book has: ";
+	std::string input_buff = "";
+	unsigned int number_buff = 0;
+	while (true)
+	{
+		std::cout << total_pages_msg;
+		std::cin >> number_buff;
+		if (std::cin.eof())
+        {
+			std::cin.clear();
+            ignore_line();
+            break;
+        }
+		else if (!std::cin.eof() && std::cin.peek() != '\n')
+        {
+			std::cin.clear();
+            ignore_line();
+            continue;
+        }
+		break;
+	}
+	if (!std::cin.eof() && std::cin.fail())
+	{
+		std::cerr << "Input of the book's title failed." << std::endl;
+		exit(1);
+	}
+	std::cout << "number: " << number_buff;
+}
+
+/*
+void input_finished(void)
+{
+}
+
+void input_note(void)
+{
+}
+
+void set_title(void)
+{
+}
+
+void set_synopsis(void)
+{
+}
+
+void set_pages(void)
+{
+}
+
+void set_finished(void)
+{
+}
+
+void set_note(void)
+{
+}
+
+void get_title(void)
+{
+}
+
+void get_synopsis(void)
+{
+}
+
+void get_pages(void)
+{
+}
+
+void get_finished(void)
+{
+}
+
+void get_note(void){
+
+}
+*/
