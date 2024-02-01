@@ -1,0 +1,6 @@
+/.vscode
+/Book.o
+/Bookshelf.exe
+/librarydb.db
+/main.o
+/sqlite3.o
