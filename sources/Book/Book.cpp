@@ -34,7 +34,7 @@ Book::~Book()
 {
 }
 
-void Book::get_info() const
+void Book::print_info() const
 {
 	std::cout << "Title is: " << title << ".\n";
 	std::cout << "Synopsis is: \n"
@@ -43,50 +43,6 @@ void Book::get_info() const
 	std::cout << "The book is" << (finished ? " " : " not ") << "finished.\n";
 	std::cout << "The note is " << note / 20 << "/5." << std::endl;
 }
-
-/*
-void	Book::set_info()
-{
-
-	unsigned	unsigned_buff;
-		if (str_buff != "")
-			title = str_buff;
-		str_buff.clear();
-		std::cin.clear();
-		std::cout << "Please write the synopsis of the book" << std::endl;
-		std::getline (std::cin, str_buff);
-		if (str_buff != "")
-			synopsis = str_buff;
-		str_buff.clear();
-		std::cin.clear();
-		std::cout << "How many pages does the book have ?" << std::endl;
-		std::cin >> unsigned_buff;
-		if (unsigned_buff != 0)
-			page_number = unsigned_buff;
-		std::cout << "Have you finished this book ?" << std::endl;
-		std::cin >> unsigned_buff;
-		std::cin.clear();
-		if (unsigned_buff != 0)
-		{
-			finished = unsigned_buff;
-			read_page = page_number;
-		}
-		else
-		{
-			std::cout << "At which page are you ?" << std::endl;
-			std::cin >> unsigned_buff;
-			std::cin.clear();
-			read_page = unsigned_buff;
-		}
-		unsigned_buff = 101;
-		while (unsigned_buff > 100)
-		{
-			std::cout << "Please give it a note out of 100" << std::endl;
-			std::cin >> unsigned_buff;
-			std::cin.clear();
-		}
-		note = unsigned_buff;
-}*/
 
 void Book::input_title(void)
 {
@@ -181,7 +137,7 @@ void Book::input_finished(void)
 	while (toggle)
 	{
 		reset_cin();
-		std::cout << "Did you finish the book ? (Y/N)" << std::endl;
+		std::cout << "Did you finish the book (Y/N)? ";
 		std::getline(std::cin, input_buff);
 		input_buff = trim_spaces(input_buff, " \n \t");
 		if (input_buff == "Y" || input_buff == "yes" || input_buff == "y")

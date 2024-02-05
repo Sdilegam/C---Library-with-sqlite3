@@ -18,7 +18,7 @@ public :
 	Book(Book &other);
 	Book &operator=(Book &other);
 	~Book();
-	void		get_info(void) const;
+	void		print_info(void) const;
 	void		input_title(void);
 	void		input_synopsis(void);
 	void		input_pages(void);

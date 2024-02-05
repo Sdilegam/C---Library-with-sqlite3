@@ -1,9 +1,11 @@
 #include "Book.hpp"
 #include "sqlite3.h"
 
-int main()
+void database_init (sqlite3 *database, const char *filename, int flags)
 {
-	std::string tableCreationInstructions = "CREATE TABLE library (\
+	char *errMsg;
+	int returnValue;
+	std::string tableCreationInstructions = "CREATE TABLE IF NOT EXISTS library (\
 		ID INTEGER PRIMARY KEY AUTOINCREMENT,\
 		name VARCHAR (200) NOT NULL UNIQUE,\
 		date TEXT DEFAULT (2000-01-01-12-00-00.00),\
@@ -11,25 +13,32 @@ int main()
 		currrent_pages INTEGER,\
 		note INTEGER,\
 		finished BOOL DEFAULT (0),\
-		synopsis TEXT\
-		)";
-	sqlite3 *db;
-	char *errMsg;
-	int returnValue;
-
-	returnValue = sqlite3_open_v2("librarydb.db", &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0);
+		synopsis TEXT)";
+	returnValue = sqlite3_open_v2(filename, &database, flags, 0);
 	if (returnValue)
 	{
 		std::cerr << "Error creating and/or opening the database." << std::endl;
-		return (1);
+		exit (1);
 	}
-	returnValue = sqlite3_exec(db, "DROP TABLE IF EXISTS library", 0, 0, &errMsg);
-	returnValue = sqlite3_exec(db, tableCreationInstructions.c_str(), 0, 0, &errMsg);
-	if (returnValue)
+	if (sqlite3_exec(database, "DROP TABLE IF EXISTS library", 0, 0, &errMsg))
+	{
+		std::cerr << "There was an error deleting the existing table: " << errMsg << std::endl;
+		sqlite3_close(database);
+		exit (1);
+	}
+	if (sqlite3_exec(database, tableCreationInstructions.c_str(), 0, 0, &errMsg))
 	{
 		std::cerr << "There was an error creating the table: " << errMsg << std::endl;
-		return (1);
+		sqlite3_close(database);
+		exit (1);
 	}
+
+}
+
+int main()
+{
+	sqlite3 *database;
+	database_init(database, "librarydb.db", SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
 	/*
 	Check ctrl+z behaviour on windows when there's some input in the line /!2\
 	*/
@@ -41,10 +50,5 @@ int main()
 	book.input_finished();
 	book.input_note();
 
-	std::cout << "Display test: " << std::endl;
-	std::cout << "Title: " << book.get_title() << "\n";
-	std::cout << "Synopsis: " << book.get_synopsis() << "\n";
-	std::cout << "Pages: " << book.get_read_pages() << "/" << book.get_total_pages() << "\n";
-	std::cout << "Finished: " << (book.get_finished() ? "yes":"no") << "\n";
-	std::cout << "Note: " << book.get_note() / 20 << "/5\n";
+	book.print_info();
 }
