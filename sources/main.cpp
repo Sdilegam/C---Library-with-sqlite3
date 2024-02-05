@@ -30,6 +30,21 @@ int main()
 		std::cerr << "There was an error creating the table: " << errMsg << std::endl;
 		return (1);
 	}
+	/*
+	Check ctrl+z behaviour on windows when there's some input in the line /!2\
+	*/
+	std::string buffer;
 	Book book;
+	book.input_title();
+	book.input_synopsis();
 	book.input_pages();
+	book.input_finished();
+	book.input_note();
+
+	std::cout << "Display test: " << std::endl;
+	std::cout << "Title: " << book.get_title() << "\n";
+	std::cout << "Synopsis: " << book.get_synopsis() << "\n";
+	std::cout << "Pages: " << book.get_read_pages() << "/" << book.get_total_pages() << "\n";
+	std::cout << "Finished: " << (book.get_finished() ? "yes":"no") << "\n";
+	std::cout << "Note: " << book.get_note() / 20 << "/5\n";
 }
