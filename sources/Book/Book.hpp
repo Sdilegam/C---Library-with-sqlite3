@@ -15,8 +15,8 @@ private:
 public :
 	Book(void);
 	Book(std::string &, bool);
-	Book(Book &other);
-	Book &operator=(Book &other);
+	Book(const Book &other);
+	Book &operator=(const Book &other);
 	~Book();
 	void		print_info(void) const;
 	void		input_title(void);

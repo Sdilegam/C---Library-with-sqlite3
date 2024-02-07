@@ -16,11 +16,11 @@ Book::Book(std::string &init_title, bool is_finished) : title(init_title), finis
 	note = 0;
 }
 
-Book::Book(Book &other) : title(other.title), synopsis(other.synopsis), page_number(other.page_number), finished(other.finished), read_page(other.read_page), note(other.note)
+Book::Book(const Book &other) : title(other.title), synopsis(other.synopsis), page_number(other.page_number), finished(other.finished), read_page(other.read_page), note(other.note)
 {
 }
 
-Book &Book::operator=(Book &other)
+Book &Book::operator=(const Book &other)
 {
 	title = other.title;
 	synopsis = other.synopsis;
@@ -28,6 +28,7 @@ Book &Book::operator=(Book &other)
 	finished = other.finished;
 	read_page = other.read_page;
 	note = other.note;
+	return (*this);
 }
 
 Book::~Book()
