@@ -4,8 +4,10 @@ void	create_table(sqlite3 **database, const std::string &table_name, std::string
 {
 	int returnValue;
 	char *errMsg;
-	char *instruction_str;
+	char *instruction_str = 0;
 	instruction_str = strdup(std::vformat(instruction, std::make_format_args(table_name)).c_str());
+	if (!instruction_str)
+		return;
 	// if (sqlite3_exec(*database, "DROP TABLE IF EXISTS library", 0, 0, &errMsg))
 	// {
 	// 	std::cerr << "There was an error deleting the existing table: " << errMsg << std::endl;
@@ -13,6 +15,7 @@ void	create_table(sqlite3 **database, const std::string &table_name, std::string
 	// 	exit (1);
 	// }
 	returnValue = sqlite3_exec(*database, instruction_str, 0, 0, &errMsg);
+	delete[] instruction_str;
 	if (returnValue)
 	{
 		std::cerr << returnValue << "There was an error creating the table: " << table_name << ": " << errMsg <<  std::endl;
@@ -50,15 +53,17 @@ void database_init (sqlite3 **database, const char *filename, int flags)
 		std::cerr << "Error creating and/or opening the database." << std::endl;
 		exit (1);
 	}
-	create_table(database, "bookshelf", bookshelf_creation_instructions);
-	create_table(database, "authors", author_list_creation_instructions);
-	create_table(database, "book_author_link", book_author_creation_instructions);
+	create_table(database, BOOK_DB, bookshelf_creation_instructions);
+	create_table(database, AUTHORS_DB, author_list_creation_instructions);
+	create_table(database, LINKING_DB, book_author_creation_instructions);
 }
 
 void	add_to_db(sqlite3 **db, Book &book)
 {
 	sqlite3_stmt	*statement;
-	const char		*query = "INSERT OR REPLACE INTO library (name, date, total_pages, current_pages, note, finished, synopsis) VALUES (?, ?, ?, ?, ?, ?, ?);";
+	const char		*unformated_query = "INSERT INTO {} (name, date, total_pages, current_pages, note, finished, synopsis) VALUES (?, ?, ?, ?, ?, ?, ?);";
+	const char		*query = strdup(std::vformat(unformated_query, std::make_format_args(BOOK_DB)).c_str());
+	
 	// std::unique_ptr<char, decltype(std::free) *> synopsis = strdup(book.get_synopsis().c_str());
 
 	sqlite3_prepare_v2(*db, query, -1, &statement, NULL);
@@ -71,6 +76,7 @@ void	add_to_db(sqlite3 **db, Book &book)
 	sqlite3_bind_text(statement, 7, book.get_synopsis(), -1, 0);
 	sqlite3_step(statement);
 	sqlite3_finalize(statement);
+	delete[] query;
 }
 
 Book	retrieve_book(sqlite3 **db, const char *name)
