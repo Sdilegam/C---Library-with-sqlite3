@@ -15,7 +15,7 @@ vpath %.c external/sqlite3
 OBJS =${SRCS:.cpp=.o}
 LIBOBJS = ${EXSRCS:.c=.o}
 CC = gcc
-CPPFLAGS = ${addprefix -I${SRCSDIR}/, ${CLASSES}} -Iexternal/sqlite3 -I${SRCSDIR} -g
+CPPFLAGS = ${addprefix -I${SRCSDIR}/, ${CLASSES}} -std=c++20 -Iexternal/sqlite3 -I${SRCSDIR} -g
 COMA = ,
 
 ${NAME}: ${OBJS} ${LIBOBJS}
